@@ -32,7 +32,7 @@ class FilterSimilarityTest {
 		HashMap<String, ArrayList<String>> filterSentence1 = this.posObject.buildSentenceTags(taggedSentence1);
 		HashMap<String, ArrayList<String>> filterSentence2 = this.posObject.buildSentenceTags(taggedSentence2);
 
-		assertEquals(10, this.posObject.filtredSimilarity(filterSentence1, filterSentence2));
+		assertEquals(1, this.posObject.posFiltredSimilarity(filterSentence1, filterSentence2));
 	}
 
 
