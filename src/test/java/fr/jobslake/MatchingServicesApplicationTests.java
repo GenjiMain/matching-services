@@ -1,4 +1,4 @@
-package fr.jobslake.matchingservices;
+package fr.jobslake;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
