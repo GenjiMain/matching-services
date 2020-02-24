@@ -12,6 +12,8 @@ public class Node {
     protected Node parent;
     protected ArrayList<String> top_skills;
 
+    public Node (){}
+
     public Node(String name, Node parent) {
         this.name = name;
         this.parent = parent;
@@ -27,6 +29,13 @@ public class Node {
         this.children = children;
     };
 
+    public ArrayList<Node> getChildren() {
+        return children;
+    }
+
+    public Node getParent(){
+        return parent;
+    }
     public void setId(Integer id) {
         this.id = id;
     }
@@ -35,9 +44,6 @@ public class Node {
         return id;
     }
 
-    public Node getParent() {
-        return parent;
-    }
 
     public void setParent(Node parent) {
         this.parent = parent;
