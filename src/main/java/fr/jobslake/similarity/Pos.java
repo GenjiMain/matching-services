@@ -3,6 +3,7 @@ package fr.jobslake.similarity;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.mongodb.BasicDBObject;
@@ -27,6 +28,7 @@ public class Pos {
     MongoClient mongoClient;
     MongoDatabase database;
     MongoCollection<Document> collection;
+    ArrayList<String> skills;
 
     public Pos() throws IOException {
         this.tagger = new MaxentTagger("C:\\Users\\mehdi\\Documents\\GitHub\\matching-services\\src\\models\\english-caseless-left3words-distsim.tagger");
@@ -36,6 +38,10 @@ public class Pos {
         this.mongoClient = new MongoClient(this.connectionString);
         this.database = this.mongoClient.getDatabase("tfidfdatabase");
         this.collection = this.database.getCollection("idf");
+        this.skills = new ArrayList<String>();
+        this.skills.add("python");
+        this.skills.add("java");
+        this.skills.add("data science");
     }
 
     public Pos(String taggerPath) {
@@ -51,31 +57,33 @@ public class Pos {
 
     }
 
-    public static HashMap<String, ArrayList<String>> buildSentenceTags(String taggedSentence){
+    public HashMap<String, ArrayList<String>> buildSentenceTags(String taggedSentence){
 
         String[] tokensVal = taggedSentence.split(" ");
         HashMap<String, ArrayList<String>> builtTags = new HashMap<String, ArrayList<String>>();
+        builtTags.put("skill", new ArrayList<String>());
 
         for(String token:tokensVal) {
             String[] keyVal = token.split("_");
-            if (builtTags.containsKey(keyVal[1])) {
-
-                ArrayList<String> vals = new ArrayList<String>(builtTags.get(keyVal[1]));
+            if(this.isSkill(keyVal[0])){
+                ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
                 vals.add(keyVal[0]);
-                builtTags.replace(keyVal[1], builtTags.get(keyVal[1]), vals);
+                builtTags.replace("skill", builtTags.get("skill"), vals);
+            }else{
+                if (builtTags.containsKey(keyVal[1])) {
 
+                    ArrayList<String> vals = new ArrayList<String>(builtTags.get(keyVal[1]));
+                    vals.add(keyVal[0]);
+                    builtTags.replace(keyVal[1], builtTags.get(keyVal[1]), vals);
+                }else {
+                    String key = keyVal[1];
+                    ArrayList<String> vals = new ArrayList<String>();
+                    vals.add(keyVal[0]);
 
-            }else {
-
-                String key = keyVal[1];
-                ArrayList<String> vals = new ArrayList<String>();
-                vals.add(keyVal[0]);
-
-                builtTags.put(key, vals);
+                    builtTags.put(key, vals);
+                }
             }
-
         }
-
         return builtTags;
     }
 
@@ -98,6 +106,10 @@ public class Pos {
         }
 
         return maxIdf;
+    }
+
+    public boolean isSkill(String word){
+        return this.skills.contains(word);
     }
 
     public double filtredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2) {
