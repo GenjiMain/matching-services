@@ -3,7 +3,6 @@ package fr.jobslake;
 import fr.jobslake.utils.taxonomy.Taxonomy;
 import fr.jobslake.utils.taxonomy.Node;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import java.util.Arrays;
 import java.util.List;
 

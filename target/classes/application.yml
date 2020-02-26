@@ -1,9 +1,0 @@
-server:
-  port: 8080
-
-spring:
-  data:
-    mongodb:
-      uri: mongodb://admin:pass@localhost:27017/admin
-  datasource:
-    driver-class-name: mongodb.jdbc.MongoDriver
