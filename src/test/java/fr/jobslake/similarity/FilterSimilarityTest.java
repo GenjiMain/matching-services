@@ -1,8 +1,8 @@
-package fr.jobslake.matchingservices.similarity;
+package fr.jobslake.similarity;
 
-import fr.jobslake.similarity.Pos;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class FilterSimilarityTest {
 
 
@@ -18,7 +18,6 @@ class FilterSimilarityTest {
 
 	FilterSimilarityTest() throws IOException {
 	}
-
 
 	@Test
 	void testFilterSimilarity() {

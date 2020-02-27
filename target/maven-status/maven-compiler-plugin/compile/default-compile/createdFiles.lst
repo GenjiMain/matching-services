@@ -1,10 +1,13 @@
 fr\jobslake\repository\ResumeRepository.class
 fr\jobslake\document\Skill.class
 fr\jobslake\document\Offers$OffersBuilder.class
+fr\jobslake\DataSimilarityTest.class
 fr\jobslake\document\Resume$Experience.class
+fr\jobslake\JsonSimpleReadExample.class
 fr\jobslake\dto\OffersDTO$OffersDTOBuilder.class
 fr\jobslake\config\Swagger2Config.class
 fr\jobslake\document\Offers.class
+fr\jobslake\similarity\Pos.class
 fr\jobslake\resource\OffersResource.class
 fr\jobslake\dto\OffersSearchDTO.class
 fr\jobslake\document\Certification.class
