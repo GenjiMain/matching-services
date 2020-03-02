@@ -107,43 +107,32 @@ public class Pos {
         return ngrams;
     }
 
+    public String addSkillMap(String taggedSentence, int maxGram, HashMap<String, ArrayList<String>> builtTags){
+        int iterator = maxGram;
+
+        while(iterator > 0){
+
+            List<String> listGrams = ngrams(iterator, taggedSentence);
+            for (String element:listGrams){
+                if(this.isSkill(formatString(element))){
+                    ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
+                    vals.add(formatString(element));
+                    builtTags.replace("skill", builtTags.get("skill"), vals);
+                    taggedSentence = taggedSentence.replaceAll(element, "__UNK__");
+                }
+            }
+            iterator--;
+        }
+
+        return taggedSentence;
+    }
+
     public HashMap<String, ArrayList<String>> buildSentenceSuperTags(String taggedSentence){
 
         HashMap<String, ArrayList<String>> builtTags = new HashMap<String, ArrayList<String>>();
         builtTags.put("skill", new ArrayList<String>());
 
-        List<String> threeGrams = ngrams(3, taggedSentence);
-
-        for (String element:threeGrams){
-            if(this.isSkill(formatString(element))){
-                ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
-                vals.add(formatString(element));
-                builtTags.replace("skill", builtTags.get("skill"), vals);
-                taggedSentence = taggedSentence.replaceAll(element, "__UNK__");
-            }
-        }
-
-        List<String> biGrams = ngrams(2, taggedSentence);
-        for (String element:biGrams){
-            if(this.isSkill(formatString(element))){
-                ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
-                vals.add(formatString(element));
-                builtTags.replace("skill", builtTags.get("skill"), vals);
-                taggedSentence = taggedSentence.replaceAll(element, "__UNK__");
-            }
-        }
-
-        List<String> uniGrams = ngrams(1, taggedSentence);
-        for (String element:uniGrams){
-            if(this.isSkill(formatString(element))){
-                ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
-                vals.add(formatString(element));
-                builtTags.replace("skill", builtTags.get("skill"), vals);
-                taggedSentence = taggedSentence.replaceAll(element, "");
-            }
-        }
-
-
+        taggedSentence = addSkillMap(taggedSentence, 3, builtTags);
         String[] tokensVal = taggedSentence.split(" ");
         for(String token:tokensVal) {
             if (token.equals("__UNK__") | token.equals(" ") | token.equals("")){
@@ -199,33 +188,47 @@ public class Pos {
 
         double totalSimilarity = 0;
         double idfSum = 0;
+        double skillsSimilarity = 0;
+        int lenghtSentence1 = 0;
 
         for(String key:sentence1.keySet()){
 
             double partialSimilarity = 0;
             if(sentence2.containsKey(key)){
-                ArrayList<String> listSentence1 = sentence1.get(key);
-                ArrayList<String> listSentence2 = sentence2.get(key);
-                for(String word1:listSentence1){
-                    double maxSimilarityWord = 0;
-                    double idfValue = this.getIdfValue(word1);
-                    if(idfValue != 0){
-
+                if (key.equals("skill")){
+                    ArrayList<String> listSentence1 = sentence1.get(key);
+                    ArrayList<String> listSentence2 = sentence2.get(key);
+                    for(String word1:listSentence1){
+                        double maxSimilarityWord = 0;
                         for(String word2:listSentence2){
-                            double sim = this.getSimilarity(word1, word2);
-                            if(!Double.isNaN(sim)){
-                                maxSimilarityWord = Math.max(maxSimilarityWord, sim);
-                            }
+                            maxSimilarityWord = Math.max(maxSimilarityWord, this.getSimilarity(word1, word2));
                         }
-                        partialSimilarity += maxSimilarityWord*idfValue;
-                        idfSum += idfValue;
+                        skillsSimilarity = maxSimilarityWord;
                     }
-
+                    skillsSimilarity = skillsSimilarity/listSentence1.size();
+                }
+                else{
+                    ArrayList<String> listSentence1 = sentence1.get(key);
+                    ArrayList<String> listSentence2 = sentence2.get(key);
+                    for(String word1:listSentence1){
+                        double maxSimilarityWord = 0;
+                        double idfValue = this.getIdfValue(word1);
+                        if(idfValue != 0) {
+                            for (String word2 : listSentence2) {
+                                double sim = this.getSimilarity(word1, word2);
+                                if (!Double.isNaN(sim)) {
+                                    maxSimilarityWord = Math.max(maxSimilarityWord, sim);
+                                }
+                            }
+                            partialSimilarity += maxSimilarityWord * idfValue;
+                            idfSum += idfValue;
+                        }
+                    }
                 }
             }
             totalSimilarity += partialSimilarity;
         }
-        return totalSimilarity/idfSum;
+        return totalSimilarity/idfSum + skillsSimilarity;
     }
 
     public double posFiltredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2){
