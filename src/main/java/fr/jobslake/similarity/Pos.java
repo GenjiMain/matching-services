@@ -15,6 +15,11 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
+import fr.jobslake.utils.exceptions.NotInTaxonomyException;
+import fr.jobslake.utils.exceptions.NotLeafException;
+import fr.jobslake.utils.exceptions.NotSameLengthAsTaxonomyDepthException;
+import fr.jobslake.utils.taxonomy.Node;
+import fr.jobslake.utils.taxonomy.Taxonomy;
 import org.bson.Document;
 import org.bytedeco.opencv.presets.opencv_core;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -32,6 +37,9 @@ public class Pos {
     MongoCollection<Document> collection;
     ArrayList<String> skills;
 
+
+    Taxonomy taxonomy = Taxonomy.getInstance();
+
     public Pos() throws IOException {
         this.tagger = new MaxentTagger("C:\\Users\\mehdi\\Documents\\GitHub\\matching-services\\src\\models\\english-caseless-left3words-distsim.tagger");
         this.gModel = new File("C:\\Users\\mehdi\\Downloads\\glove.6B\\glove.6B.50d.txt");
@@ -45,6 +53,42 @@ public class Pos {
         this.skills.add("java");
         this.skills.add("data science");
         this.skills.add("machine learning");
+
+        Node node1 = new Node("node1", taxonomy.root);
+        Node node2 = new Node("node2", taxonomy.root);
+
+        Node node11 = new Node("node11", node1);
+        Node node12 = new Node("node12", node1);
+        Node node21 = new Node("node21", node2);
+        Node node22 = new Node("node22", node2);
+
+        Node node111 = new Node("data science", node11);
+        Node node112 = new Node("machine learning", node11);
+        Node node121 = new Node("java", node12);
+        Node node122 = new Node("python", node12);
+        Node node211 = new Node("power bi", node21);
+        Node node212 = new Node("sql server", node21);
+        Node node221 = new Node("visual basic", node22);
+        Node node222 = new Node("c++", node22);
+
+        taxonomy.addNode(node1, taxonomy.root);
+        taxonomy.addNode(node2, taxonomy.root);
+
+        taxonomy.addNode(node11, node1);
+        taxonomy.addNode(node12, node1);
+        taxonomy.addNode(node21, node2);
+        taxonomy.addNode(node22, node2);
+
+        taxonomy.addNode(node111, node11);
+        taxonomy.addNode(node112, node11);
+        taxonomy.addNode(node121, node12);
+        taxonomy.addNode(node122, node12);
+
+        taxonomy.addNode(node211, node21);
+        taxonomy.addNode(node212, node21);
+        taxonomy.addNode(node221, node22);
+        taxonomy.addNode(node222, node22);
+
     }
 
     public Pos(String taggerPath) {
@@ -59,7 +103,7 @@ public class Pos {
         return this.tagger.tagString(sentence);
 
     }
-
+/*
     public HashMap<String, ArrayList<String>> buildSentenceTags(String taggedSentence){
 
         String[] tokensVal = taggedSentence.split(" ");
@@ -90,6 +134,40 @@ public class Pos {
         }
         return builtTags;
     }
+*/
+
+
+    public HashMap<String, ArrayList<String>> buildSentenceTags(String taggedSentence) throws NotLeafException, NotInTaxonomyException {
+
+        String[] tokensVal = taggedSentence.split(" ");
+        HashMap<String, ArrayList<String>> builtTags = new HashMap<String, ArrayList<String>>();
+        builtTags.put("skill", new ArrayList<String>());
+
+        for(String token:tokensVal) {
+            String[] keyVal = token.split("_");
+            // change "this.isSkill(keyVal[0])" with taxonomy.isLeaf(keyVal[0])
+            if(taxonomy.isLeaf(keyVal[0])){
+                ArrayList<String> vals = new ArrayList<String>(builtTags.get("skill"));
+                vals.add(keyVal[0]);
+                builtTags.replace("skill", builtTags.get("skill"), vals);
+            }else{
+                if (builtTags.containsKey(keyVal[1])) {
+
+                    ArrayList<String> vals = new ArrayList<String>(builtTags.get(keyVal[1]));
+                    vals.add(keyVal[0]);
+                    builtTags.replace(keyVal[1], builtTags.get(keyVal[1]), vals);
+                }else {
+                    String key = keyVal[1];
+                    ArrayList<String> vals = new ArrayList<String>();
+                    vals.add(keyVal[0]);
+
+                    builtTags.put(key, vals);
+                }
+            }
+        }
+        return builtTags;
+    }
+
 
     public List<String> ngrams(int n, String sentence) {
         String[] tokensVal = sentence.split(" ");
@@ -184,12 +262,18 @@ public class Pos {
         return this.skills.contains(word);
     }
 
-    public double filtredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2) {
+    public double filtredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2) throws NotSameLengthAsTaxonomyDepthException, NotLeafException, NotInTaxonomyException {
 
         double totalSimilarity = 0;
         double idfSum = 0;
         double skillsSimilarity = 0;
         int lenghtSentence1 = 0;
+
+        List<Double> weights = Arrays.asList(new Double[3]);
+        weights.set(0,1.0);
+        weights.set(1, 0.8);
+        weights.set(2,0.6);
+
 
         for(String key:sentence1.keySet()){
 
@@ -201,11 +285,15 @@ public class Pos {
                     for(String word1:listSentence1){
                         double maxSimilarityWord = 0;
                         for(String word2:listSentence2){
-                            maxSimilarityWord = Math.max(maxSimilarityWord, this.getSimilarity(word1, word2));
+                            maxSimilarityWord = Math.max(maxSimilarityWord, taxonomy.nodesSimilarity(word1, word2, weights));
                         }
                         skillsSimilarity = maxSimilarityWord;
                     }
-                    skillsSimilarity = skillsSimilarity/listSentence1.size();
+                    if(listSentence1.size() == 0){
+                        skillsSimilarity = 0;
+                    }else {
+                        skillsSimilarity = skillsSimilarity / listSentence1.size();
+                    }
                 }
                 else{
                     ArrayList<String> listSentence1 = sentence1.get(key);
@@ -228,10 +316,11 @@ public class Pos {
             }
             totalSimilarity += partialSimilarity;
         }
+
         return totalSimilarity/idfSum + skillsSimilarity;
     }
 
-    public double posFiltredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2){
+    public double posFiltredSimilarity(HashMap<String, ArrayList<String>> sentence1,HashMap<String, ArrayList<String>>sentence2) throws NotSameLengthAsTaxonomyDepthException, NotInTaxonomyException, NotLeafException {
 
         return  (this.filtredSimilarity(sentence1, sentence2) + this.filtredSimilarity(sentence2, sentence1))/2;
 

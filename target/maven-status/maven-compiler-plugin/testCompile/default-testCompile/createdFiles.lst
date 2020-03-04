@@ -1,8 +1,0 @@
-fr\jobslake\matchingservices\similarity\GetSimilarityTest.class
-fr\jobslake\similarity\IsSkillTest.class
-fr\jobslake\service\CucumberSpringContextConfiguration.class
-fr\jobslake\service\OfferServiceTest.class
-fr\jobslake\matchingservices\similarity\MatchingServicesApplicationTests.class
-fr\jobslake\similarity\BuildSentenceTagsTest.class
-fr\jobslake\matchingservices\similarity\CleanSentenceTests.class
-fr\jobslake\matchingservices\similarity\FilterSimilarityTest.class

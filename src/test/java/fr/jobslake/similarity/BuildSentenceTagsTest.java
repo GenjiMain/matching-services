@@ -1,6 +1,8 @@
 package fr.jobslake.similarity;
 
 import fr.jobslake.similarity.Pos;
+import fr.jobslake.utils.exceptions.NotInTaxonomyException;
+import fr.jobslake.utils.exceptions.NotLeafException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -23,7 +25,7 @@ class BuildSentenceTagsTest {
 
 
 	@Test
-	void testBuildSentenceTags() {
+	void testBuildSentenceTags() throws NotLeafException, NotInTaxonomyException {
 
 		//String sentence = "mehdi is a data scientist with inevtiv it in France and paris";
 		String sentence = "we are looking for machine learning engineer";

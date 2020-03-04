@@ -14,28 +14,28 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-class FilterSimilarityTest {
+class FilterSimilaritySuperTest {
 
 
 	Pos posObject = new Pos();
 
-	FilterSimilarityTest() throws IOException {
+	FilterSimilaritySuperTest() throws IOException {
 	}
 
 	@Test
 	void testFilterSimilarity() throws NotSameLengthAsTaxonomyDepthException, NotLeafException, NotInTaxonomyException {
 
-		String sentence1 = "mehdi is a data scientist with inevtiv it in France and paris";
-		String sentence2 = "mehdi is a data scientist with inevtiv it in France and paris";
+		String sentence1 = "mehdi is a python with inevtiv it in France and paris";
+		String sentence2 = "mehdi is a python with inevtiv it in France and paris";
 
 		String taggedSentence1 = this.posObject.tagSentence(sentence1);
 		String taggedSentence2 = this.posObject.tagSentence(sentence2);
 
-		HashMap<String, ArrayList<String>> filterSentence1 = this.posObject.buildSentenceTags(taggedSentence1);
-		HashMap<String, ArrayList<String>> filterSentence2 = this.posObject.buildSentenceTags(taggedSentence2);
+		HashMap<String, ArrayList<String>> filterSentence1 = this.posObject.buildSentenceSuperTags(taggedSentence1);
+		HashMap<String, ArrayList<String>> filterSentence2 = this.posObject.buildSentenceSuperTags(taggedSentence2);
 
-		assertEquals(1, this.posObject.posFiltredSimilarity(filterSentence1, filterSentence2));
+		double score = this.posObject.posFiltredSimilarity(filterSentence1, filterSentence2);
+		assertEquals(1, score);
 	}
-
 
 }

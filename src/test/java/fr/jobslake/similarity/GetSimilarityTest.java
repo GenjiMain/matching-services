@@ -1,4 +1,4 @@
-package fr.jobslake.matchingservices.similarity;
+package fr.jobslake.similarity;
 
 import fr.jobslake.similarity.Pos;
 import org.junit.jupiter.api.Test;

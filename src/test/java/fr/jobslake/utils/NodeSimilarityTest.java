@@ -1,18 +1,37 @@
-package fr.jobslake;
+package fr.jobslake.utils;
 
-import fr.jobslake.utils.taxonomy.Taxonomy;
+import fr.jobslake.utils.exceptions.NotInTaxonomyException;
+import fr.jobslake.utils.exceptions.NotLeafException;
+import fr.jobslake.utils.exceptions.NotSameLengthAsTaxonomyDepthException;
 import fr.jobslake.utils.taxonomy.Node;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import fr.jobslake.utils.taxonomy.Taxonomy;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootApplication
-public class MatchingServicesApplication {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-	public static void main(String[] args) throws Exception {
-		//SpringApplication.run(MatchingServicesApplication.class, args);
-		Taxonomy taxonomy = Taxonomy.getInstance();
-		// create a Taxonomy graph
+@RunWith(MockitoJUnitRunner.class)
+class NodeSimilarityTest {
+
+
+	Taxonomy taxonomy = Taxonomy.getInstance();
+
+	NodeSimilarityTest() throws IOException {
+	}
+
+	@Test
+	void testNodeSimilarity() throws NotSameLengthAsTaxonomyDepthException, NotLeafException, NotInTaxonomyException {
+
+		List<Double> weights = Arrays.asList(new Double[3]);
+		weights.set(0,1.0);
+		weights.set(1, 0.8);
+		weights.set(2,0.6);
+
 		Node node1 = new Node("node1", taxonomy.root);
 		Node node2 = new Node("node2", taxonomy.root);
 
@@ -48,27 +67,11 @@ public class MatchingServicesApplication {
 		taxonomy.addNode(node221, node22);
 		taxonomy.addNode(node222, node22);
 
-		// System.out.println(taxonomy.getNodes());
-		Integer id =1 ;
-		// System.out.println(taxonomy.getIdFromNodeName("node1"));
-		// System.out.println(taxonomy.getInstanceFromNodeName("node222"));
-
-		// System.out.println(taxonomy.isLeaf("node1"));
-		//System.out.println(taxonomy.hasSameParent("node222", "node221"));
-		List<Double> weights = Arrays.asList(new Double[3]);
-		weights.set(0,1.0);
-		weights.set(1, 0.8);
-		weights.set(2,0.6);
-		// System.out.println(taxonomy.getDepthOfTaxonomy());
-		// System.out.println(taxonomy.getNodes());
-		// System.out.println(taxonomy.getAllLeavesName());
-		// System.out.println(taxonomy.isInTaxonomy("node"));
-		// System.out.println(node01.getParent().name);
-		System.out.println(taxonomy.nodesSimilarity("data science", "data science" ,weights));
-		// System.out.println(taxonomy.getAllAntecedent("node221"));
-
-
+		System.out.println(taxonomy.nodesSimilarity("python", "python", weights));
+		System.out.println(taxonomy.nodesSimilarity("python", "java", weights));
+		System.out.println(taxonomy.nodesSimilarity("python", "machine learning", weights));
+		System.out.println(taxonomy.nodesSimilarity("python", "c++", weights));
 	}
 
-}
 
+}

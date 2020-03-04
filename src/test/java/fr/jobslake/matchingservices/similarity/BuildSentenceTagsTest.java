@@ -1,6 +1,7 @@
 package fr.jobslake.matchingservices.similarity;
 
 import fr.jobslake.similarity.Pos;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -10,23 +11,25 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+
 class BuildSentenceTagsTest {
 
 
-	Pos posObject = new Pos();
+	//Pos posObject = new Pos();
 
 	BuildSentenceTagsTest() throws IOException {
 	}
 
 
 	@Test
-	void testBuildSentenceTags() {
+	void testBuildSentenceTags() throws IOException {
+	
+		Pos posObject = new Pos();
 
-		String sentence = "mehdi is a data scientist with inevtiv it in France and paris";
-		String taggedSentence = this.posObject.tagSentence(sentence);
+		String sentence = "mehdi is a data science with inevtiv it in France and paris";
+		String taggedSentence = posObject.tagSentence(sentence);
 
-		HashMap<String, ArrayList<String>> response = this.posObject.buildSentenceTags(taggedSentence);
+		HashMap<String, ArrayList<String>> response = posObject.buildSentenceSuperTags(taggedSentence);
 
 
 		// Test length sentence

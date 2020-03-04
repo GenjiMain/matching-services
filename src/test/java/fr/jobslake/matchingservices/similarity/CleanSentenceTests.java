@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+
 class CleanSentenceTests {
 
 
@@ -22,7 +22,7 @@ class CleanSentenceTests {
 	@Test
 	void testCleanSentence() {
 		String sentence = "hjdg$h&jk8^i0ssh6";
-		String response = "hjdghjk8i0ssh6";
+		String response = "hjdg h jk8 i0ssh6";
 
 		assertEquals(response, this.posObject.cleanSentence(sentence));
 	}

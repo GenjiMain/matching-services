@@ -18,12 +18,15 @@ import java.util.List;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import fr.jobslake.utils.exceptions.NotInTaxonomyException;
+import fr.jobslake.utils.exceptions.NotLeafException;
+import fr.jobslake.utils.exceptions.NotSameLengthAsTaxonomyDepthException;
 import org.bson.Document;
 import org.slf4j.LoggerFactory;
 
 public class DataSimilarityTest {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, NotLeafException, NotInTaxonomyException, NotSameLengthAsTaxonomyDepthException {
 
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger rootLoggerMongo = loggerContext.getLogger("org.mongodb.driver");
