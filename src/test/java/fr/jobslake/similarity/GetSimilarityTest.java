@@ -2,6 +2,8 @@ package fr.jobslake.similarity;
 
 import fr.jobslake.similarity.Pos;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class GetSimilarityTest {
 
 

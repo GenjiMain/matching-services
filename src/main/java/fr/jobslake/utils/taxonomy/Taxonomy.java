@@ -131,7 +131,7 @@ public class Taxonomy {
         Node node = null;
         HashMap<Integer, Node> ids_nodes = this.nodes;
         Iterator nodesIter = ids_nodes.entrySet().iterator();
-        if (isInTaxonomy(nodeName)) {
+        if ( isInTaxonomy(nodeName)) {
 
             while (!found & nodesIter.hasNext()) {
 

@@ -23,19 +23,19 @@ class FilterSimilaritySuperTest {
 	}
 
 	@Test
-	void testFilterSimilarity() throws NotSameLengthAsTaxonomyDepthException, NotLeafException, NotInTaxonomyException {
+	void testFilterSimilarity(){
 
-		String sentence1 = "mehdi is a python with inevtiv it in France and paris";
-		String sentence2 = "mehdi is a python with inevtiv it in France and paris";
+		String sentence = "tom is date scientist who uses python";
+		String sentence2 = "brad is a java developper";
 
-		String taggedSentence1 = this.posObject.tagSentence(sentence1);
-		String taggedSentence2 = this.posObject.tagSentence(sentence2);
+		String cleanSentence1 = this.posObject.cleanSentence(sentence);
+		String cleanSentence2 = this.posObject.cleanSentence(sentence2);
 
-		HashMap<String, ArrayList<String>> filterSentence1 = this.posObject.buildSentenceSuperTags(taggedSentence1);
-		HashMap<String, ArrayList<String>> filterSentence2 = this.posObject.buildSentenceSuperTags(taggedSentence2);
+		double score1 = this.posObject.ScoreSimilarity(cleanSentence1, cleanSentence1);
+		double score2 = this.posObject.ScoreSimilarity(cleanSentence1, cleanSentence2);
 
-		double score = this.posObject.posFiltredSimilarity(filterSentence1, filterSentence2);
-		assertEquals(1, score);
+		assertEquals(1, score1);
+		assertEquals(0.5435551630506813, score2);
 	}
 
 }

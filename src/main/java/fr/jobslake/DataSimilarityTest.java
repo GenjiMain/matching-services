@@ -1,5 +1,5 @@
 package fr.jobslake;
-
+/*
 import ch.qos.logback.classic.Logger;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -70,7 +70,7 @@ public class DataSimilarityTest {
                 String taggedSentence2 = posSimilarityObject.tagSentence(cleanedSentence2);
                 HashMap<String, ArrayList<String>> builtSenetence2Tags = posSimilarityObject.buildSentenceTags(taggedSentence2);
 
-                double scoreSimilarity = posSimilarityObject.posFiltredSimilarity(builtSenetence1Tags, builtSenetence2Tags);
+                double scoreSimilarity = posSimilarityObject.ScoreSimilarity(builtSenetence1Tags, builtSenetence2Tags);
 
                 Document doc = new Document("idSentence1", firstElementId)
                         .append("idSentence2", secondElementId)
@@ -97,3 +97,4 @@ public class DataSimilarityTest {
     }
 
 }
+*/

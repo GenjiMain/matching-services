@@ -26,8 +26,8 @@ class BuildSentenceSuperTagsTest {
 		String sentence = "we are looking for machine learning engineer";
 		String sentence2 = "mehdi uses python and java";
 
-		String taggedSentence = this.posObject.tagSentence(sentence);
-		String taggedSentence2 = this.posObject.tagSentence(sentence2);
+		String taggedSentence = this.posObject.cleanSentence(sentence);
+		String taggedSentence2 = this.posObject.cleanSentence(sentence2);
 
 		HashMap<String, ArrayList<String>> response = this.posObject.buildSentenceSuperTags(taggedSentence);
 		HashMap<String, ArrayList<String>> response2 = this.posObject.buildSentenceSuperTags(taggedSentence2);

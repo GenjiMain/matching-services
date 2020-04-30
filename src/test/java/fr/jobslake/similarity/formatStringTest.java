@@ -20,7 +20,7 @@ class formatStringTest {
 
 	@Test
 	void testBuildSentenceTags() {
-		String sentence = "mehdi_NN __UNKNOWN__ kjklqs_UI";
+		String sentence = "tom_NN __UNKNOWN__ kjklqs_UI";
 		System.out.println(posObject.formatString(sentence));
 
 	}

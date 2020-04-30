@@ -21,7 +21,7 @@ class ngramsTest {
 	@Test
 	void testBuildSentenceTags() {
 
-		String sentence = "mehdi is a data scientist";
+		String sentence = "tom is a data scientist";
 
 		System.out.println(posObject.ngrams(2, sentence));
 
